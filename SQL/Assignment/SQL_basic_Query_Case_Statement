@@ -1,0 +1,75 @@
+create or replace table PT_SALES
+
+(order_id varchAR (30),
+order_date DATE,
+ship_date DATE,
+ship_mode VARCHAR(20),
+customer_name VARCHAR(100),
+segment VARCHAR(30),
+state VARCHAR(50),
+country VARCHAR(100),
+market string,
+region VARCHAR(20),
+product_id  VARCHAR2(100),
+category VARCHAR(40),
+sub_category STRING,
+product_name VARCHAR2(1000),
+sales NUMBER(10,0),
+ quantity NUMBER(10,0),
+ discount FLOAT,
+ profit FLOAT,
+ shipping_cost FLOAT,
+ order_priority STRING,
+ year NUMBER(10,0)
+);
+
+DESCRIBE TABLE PT_SALES;
+
+SELECT* FROM PT_SALES;
+
+
+
+-- Question 1 and 2 have loaded the data and set primary key.
+ALTER TABLE PT_SALES ADD primary key (ORDER_ID);
+
+-- Question 3 checked the data type of ORDER_DATE and SHIP_DATE its Date and it should be date only.
+DESCRIBE TABLE PT_SALES;
+
+
+-- Question 4 
+Alter table PT_SALES 
+add column order_extract varchar(20);
+--- extracting values
+update PT_SALES
+set order_extract = SUBSTR(order_id,9,10);
+
+
+ --Question 5 
+ ALTER TABLE PT_SALES
+ ADD COLUMN discount_flag varchar(20);
+  update PT_SALES
+  set discount_flag = case when discount>0 then 'yes' 
+  else 'no'
+  end;
+  
+  select * from PT_SALES;
+
+--question 6 
+alter table PT_SALES
+add column process_days int;
+update PT_SALES
+SET process_days = DATEDIFF('day', order_date ,ship_date );
+ select process_days from PT_SALES;
+ 
+--question 7
+ALTER TABLE PT_SALES
+ADD Column Rating int;
+
+UPDATE PT_SALES
+SET Rating = Case When process_days <= 3 Then 5
+    When process_days > 3 <= 6 Then 4
+    When process_days > 6 >= 10 Then 3
+    Else 2
+    End;
+    
+SELECT discount_flag,process_days,Rating FROM PT_SALES;
